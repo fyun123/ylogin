@@ -1,0 +1,14 @@
+server:
+  port: 7200
+spring:
+  application:
+    name: ylogin-auth
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: 10.138.213.16
+    port: 6379
+  session:
+    store-type: redis

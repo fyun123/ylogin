@@ -1,0 +1,29 @@
+server:
+  port: 88
+
+spring:
+  application:
+    name: ylogin-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+    gateway:
+      routes:
+        - id: user_route
+          uri: lb://ylogin-user
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*), /$\{segment}
+
+        - id: ylogin_host_route
+          uri: lb://ylogin-client
+          predicates:
+            - Host=ylogin.com
+
+        - id: ylogin_auth_route
+          uri: lb://ylogin-auth
+          predicates:
+            - Host=auth.ylogin.com
