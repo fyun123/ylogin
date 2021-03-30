@@ -18,10 +18,15 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>/?.*), /$\{segment}
 
-        - id: ylogin_host_route
+        - id: ylogin_client0_route
           uri: lb://ylogin-client
           predicates:
             - Host=ylogin.com
+
+        - id: ylogin_client1_route
+          uri: lb://ylogin-client1
+          predicates:
+            - Host=ylogin.client1.com
 
         - id: ylogin_auth_route
           uri: lb://ylogin-auth

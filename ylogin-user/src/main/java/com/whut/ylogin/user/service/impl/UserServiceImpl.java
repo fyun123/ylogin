@@ -3,9 +3,11 @@ package com.whut.ylogin.user.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whut.ylogin.common.to.SocialUserTo;
+import com.whut.ylogin.common.to.UserLoginTo;
 import com.whut.ylogin.common.utils.HttpUtils;
 import com.whut.ylogin.common.utils.PageUtils;
 import com.whut.ylogin.common.utils.Query;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +25,7 @@ import com.whut.ylogin.user.dao.UserDao;
 import com.whut.ylogin.user.entity.UserEntity;
 import com.whut.ylogin.user.service.UserService;
 
-
+@Slf4j
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
 
@@ -37,8 +39,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         return new PageUtils(page);
     }
 
+    /**
+     * 社交登录
+     * @param socialUserTo 社交登录成功返回的数据
+     * @return UserEntity 数据库保存的用户
+     */
     @Override
-    public UserEntity login(SocialUserTo socialUserTo) {
+    public UserEntity SocialLogin(SocialUserTo socialUserTo) {
         // 登陆和注册合并逻辑
         String uid = socialUserTo.getUid();
         UserDao userDao = this.baseMapper;
@@ -66,14 +73,36 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
                     // 获取用户信息
                     register.setNickname(jsonObject.getString("name"));
                     register.setGender("m".equals(jsonObject.getString("gender")) ?1:0);
-
+                    register.setProfileImageUrl(jsonObject.getString("profile_image_url"));
                 }
-            }catch (Exception e){ }
+            }catch (Exception e){
+                log.error("调用微博API服务失败");
+            }
             register.setSocialUid(socialUserTo.getUid());
             register.setAccessToken(socialUserTo.getAccessToken());
             register.setCreateTime(new Date());
             userDao.insert(register);
             return register;
+        }
+    }
+
+    @Override
+    public UserEntity login(UserLoginTo userLoginTo) {
+        String loginAccount = userLoginTo.getLoginAccount();
+        String password = userLoginTo.getPassword();
+        // 1. 去数据库查询
+        UserEntity userEntity = this.baseMapper.selectOne(new QueryWrapper<UserEntity>().eq("username", loginAccount));
+        if (userEntity == null){
+            return null;
+        } else {
+            String passwordDb = userEntity.getPassword();
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            boolean matches = bCryptPasswordEncoder.matches(password, passwordDb);
+            if (matches){
+                return userEntity;
+            } else {
+                return  null;
+            }
         }
     }
 

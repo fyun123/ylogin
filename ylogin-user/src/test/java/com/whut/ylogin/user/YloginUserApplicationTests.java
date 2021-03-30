@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableDiscoveryClient
 @SpringBootTest
@@ -15,8 +16,12 @@ class YloginUserApplicationTests {
 
     @Test
     void contextLoads() {
-        UserEntity byId = userService.getById(1);
-        System.out.println(byId);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encode = passwordEncoder.encode("ylogin");
+        System.out.println(encode);
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        boolean matches = bCryptPasswordEncoder.matches("ylogin", "$2a$10$qWxidPBiUTfxDOppMeX6DO6DvV9h9woKDj/b4SkyO.ziKS0Qjhq1y");
+        System.out.println(matches);
     }
 
 }

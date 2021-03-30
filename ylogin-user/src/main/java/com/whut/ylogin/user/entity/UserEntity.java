@@ -37,9 +37,9 @@ public class UserEntity implements Serializable {
 	 */
 	private String nickname;
 	/**
-	 * 邮箱
+	 * 头像
 	 */
-	private String mail;
+	private String profileImageUrl;
 	/**
 	 * 性别
 	 */

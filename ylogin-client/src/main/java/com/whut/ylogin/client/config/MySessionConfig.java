@@ -11,13 +11,13 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @Configuration
 public class MySessionConfig {
 
-    @Bean
-    public CookieSerializer cookieSerializer(){
-        DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
-        cookieSerializer.setDomainName("ylogin.com");
-        cookieSerializer.setCookieName("YLOGINESSION");
-        return cookieSerializer;
-    }
+//    @Bean
+//    public CookieSerializer cookieSerializer(){
+//        DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+//        cookieSerializer.setDomainName("ylogin.com");
+//        cookieSerializer.setCookieName("YLOGINESSION");
+//        return cookieSerializer;
+//    }
 
     @Bean
     public RedisSerializer<Object> springSessionDefaultRedisSerializer() {

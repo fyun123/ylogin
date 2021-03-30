@@ -9,7 +9,7 @@
         <result property="username" column="username"/>
         <result property="password" column="password"/>
         <result property="nickname" column="nickname"/>
-        <result property="mail" column="mail"/>
+        <result property="profileImageUrl" column="profile_image_url"/>
         <result property="gender" column="gender"/>
         <result property="createTime" column="create_time"/>
     </resultMap>

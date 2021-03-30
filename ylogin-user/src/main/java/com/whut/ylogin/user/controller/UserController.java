@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.whut.ylogin.common.exception.BizCodeEnume;
 import com.whut.ylogin.common.to.SocialUserTo;
+import com.whut.ylogin.common.to.UserLoginTo;
 import com.whut.ylogin.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,11 +41,24 @@ public class UserController {
     }
 
     /**
+     * 登录
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody UserLoginTo userLoginTo){
+        UserEntity userEntity = userService.login(userLoginTo);
+        if (userEntity != null){
+            return R.ok().setData(userEntity);
+        }else {
+            return R.error(BizCodeEnume.LOGINACCOUNT_PASSWORD_INVALID_EXCEPTION.getCode(),BizCodeEnume.LOGINACCOUNT_PASSWORD_INVALID_EXCEPTION.getMsg());
+        }
+    }
+
+    /**
      * 社交用户登陆
      */
     @PostMapping("/oauth/login")
     public R socialLogin(@RequestBody SocialUserTo socialUserTo) throws Exception {
-        UserEntity userEntity = userService.login(socialUserTo);
+        UserEntity userEntity = userService.SocialLogin(socialUserTo);
         if (userEntity != null){
             return R.ok().setData(userEntity);
         }else {

@@ -30,8 +30,15 @@ public class R extends HashMap<String, Object> {
 	 * @param <T>
 	 * @return
 	 */
-	public <T> T getData(String key,TypeReference<T> typeReference) {
+	public <T> T get(String key,TypeReference<T> typeReference) {
 		Object data = get(key);
+		String s = JSON.toJSONString(data);
+		T t = JSON.parseObject(s, typeReference);
+		return t;
+	}
+
+	public <T> T getData(TypeReference<T> typeReference) {
+		Object data = get("data");
 		String s = JSON.toJSONString(data);
 		T t = JSON.parseObject(s, typeReference);
 		return t;
