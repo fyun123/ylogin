@@ -11,7 +11,7 @@
     </h1>
     <br>
     <h1>
-        欢迎：<img th:if="${session.loginUser != null}" th:src="${session.loginUser.profileImageUrl}"/>[[${session.loginUser.nickname}]]
+        欢迎：<img th:if="${session.loginUser != null}" th:src="${session.loginUser.profileImageUrl}"/>[[${session.loginUser.nickname}]]<a style="color: red" href="http://auth.ylogin.com/logOut?redirectURL=http://ylogin.com">退出</a>
     </h1>
 </div>
 </body>

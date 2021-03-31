@@ -40,7 +40,7 @@
                         <input type="hidden" th:name="redirectURL" th:value="${param.redirectURL}">
                     </div>
                     <div class="si_out">
-                        <a th:href="'https://api.weibo.com/oauth2/authorize?client_id=App_Id&response_type=code&redirect_uri=http://auth.ylogin.com/oauth2.0/weibo/success&state='+${param.redirectURL}">
+                        <a th:href="'https://api.weibo.com/oauth2/authorize?client_id=appid&response_type=code&redirect_uri=http://auth.ylogin.com/oauth2.0/weibo/success&state='+${param.redirectURL}">
                             <img th:width="50px" th:height="18px" src="/static/login/JD_img/weibo.png" />
                         </a>
                     </div>

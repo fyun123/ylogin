@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.whut.ylogin.common.constant.AuthServerConstant;
 import com.whut.ylogin.common.utils.HttpUtils;
-import com.whut.ylogin.common.utils.R;
 import com.whut.ylogin.common.vo.UserResponseVo;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,6 @@ public class ClientController {
     @GetMapping("/")
     public String index(HttpSession session, @RequestParam(value = "token",required = false) String token) throws Exception {
         if (!StringUtils.isEmpty(token)){
-            // 去认证服务器查询用户信息
             Map<String,String> map = new HashMap<>();
             map.put("token",token);
             HttpResponse response = HttpUtils.doGet("http://auth.ylogin.com", "/loginUserInfo", "GET", new HashMap<String, String>(), map);
@@ -49,10 +46,12 @@ public class ClientController {
         if (attribute != null){
             return "index";
         } else {
+            // 由于域名不同，不能实现session共享
             session.setAttribute("msg","请先进行登录");
-            return "redirect:http://auth.ylogin.com/login.html?redirectURL=http://ylogin.com";
+            return "redirect:http://auth.ylogin.com/login.html?redirectURL=http://ylogin.client1.com";
         }
     }
+
     @ResponseBody
     @GetMapping("/logout")
     public String logout(@RequestParam("token") String token){
