@@ -28,8 +28,15 @@ public class ClientController {
 
     private static final Map<String, HttpSession> localSession = new HashMap<>();
 
+    private static final Map<String, String> sessionTokenMapping = new HashMap<>();
+
     @GetMapping("/")
-    public String index(HttpSession session, @RequestParam(value = "token",required = false) String token) throws Exception {
+    public String index(){
+        return "index";
+    }
+
+    @GetMapping("/abc")
+    public String abc(HttpServletRequest request,HttpSession session, @RequestParam(value = "token",required = false) String token) throws Exception {
         if (!StringUtils.isEmpty(token)){
             Map<String,String> map = new HashMap<>();
             map.put("token",token);
@@ -40,24 +47,33 @@ public class ClientController {
                 });
                 session.setAttribute(AuthServerConstant.LOGIN_USER,userResponseVo);
                 localSession.put(token,session);
+                sessionTokenMapping.put(session.getId(),token);
             }
         }
         UserResponseVo attribute = (UserResponseVo) session.getAttribute(AuthServerConstant.LOGIN_USER);
         if (attribute != null){
-            return "index";
+            return "abc";
         } else {
             // 由于域名不同，不能实现session共享
             session.setAttribute("msg","请先进行登录");
-            return "redirect:http://auth.ylogin.com/login.html?redirectURL=http://ylogin.client1.com";
+            return "redirect:http://auth.ylogin.com/login.html?redirectURL=http://ylogin.client1.com"+request.getServletPath();
         }
     }
 
+
     @ResponseBody
-    @GetMapping("/logout")
+    @GetMapping("/abc/deleteSession")
     public String logout(@RequestParam("token") String token){
         HttpSession session = localSession.get(token);
 //        session.removeAttribute(AuthServerConstant.LOGIN_USER);
         session.invalidate();
         return "logout";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request){
+        String sessionId = request.getSession().getId();
+        String token = sessionTokenMapping.get(sessionId);
+        return "redirect:http://auth.ylogin.com/logOut?redirectURL=http://ylogin.client1.com&token="+token;
     }
 }

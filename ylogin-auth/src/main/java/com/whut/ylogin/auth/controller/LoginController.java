@@ -119,36 +119,38 @@ public class LoginController {
      * @return
      */
     @GetMapping("/logOut")
-    public String logout(HttpServletRequest request, HttpServletResponse response,@RequestParam("redirectURL") String url) throws Exception {
-
+    public String logout(HttpServletRequest request, HttpServletResponse response,@RequestParam("redirectURL") String url, @RequestParam("token") String token) throws Exception {
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length > 0){
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("sso_token")){
-                    String value = cookie.getValue();
-                    // 清除各应用系统的session
-                    String s = redisTemplate.opsForValue().get("loginUrl");
-                    Map<String, String> map = new HashMap<>();
-                    map.put("token",value);
-                    if (!StringUtils.isEmpty(s)){
-                        List<String> urls = JSON.parseObject(s, new TypeReference<List<String>>() {
-                        });
-                        for (String loginUrl : urls) {
-                            HttpUtils.doGet(loginUrl, "/logout", "GET",new HashMap<String, String>(), map);
+                    // 验证令牌
+                    if (cookie.getValue().equals(token)){
+                        String value = cookie.getValue();
+                        // 清除各应用系统的session
+                        String s = redisTemplate.opsForValue().get("loginUrl");
+                        Map<String, String> map = new HashMap<>();
+                        map.put("token",value);
+                        if (!StringUtils.isEmpty(s)){
+                            List<String> urls = JSON.parseObject(s, new TypeReference<List<String>>() {
+                            });
+                            for (String loginUrl : urls) {
+                                HttpUtils.doGet(loginUrl, "/deleteSession", "GET",new HashMap<String, String>(), map);
+                            }
                         }
+                        // 删除redis中保存的用户信息
+                        redisTemplate.delete(value);
+                        // 清除SSO服务器的cookie令牌
+                        Cookie cookie1 = new Cookie("sso_token", "");
+                        cookie1.setPath("/");
+                        cookie1.setMaxAge(0);
+                        response.addCookie(cookie1);
                     }
-                    // 删除redis中保存的用户信息
-                    redisTemplate.delete(value);
-                    // 清除SSO服务器的cookie令牌
-                    Cookie cookie1 = new Cookie("sso_token", "");
-                    cookie1.setPath("/");
-                    cookie1.setMaxAge(0);
-                    response.addCookie(cookie1);
                 }
             }
         }
         // 清除redis保存的登录url
         redisTemplate.delete("loginUrl");
-        return "redirect:http://auth.ylogin.com/login.html?redirectURL="+url;
+        return "redirect:"+url;
     }
 }

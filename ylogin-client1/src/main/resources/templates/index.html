@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>客户端1</title>
+    <title>主页</title>
 </head>
 <body>
 <div>
@@ -11,7 +11,7 @@
     </h1>
     <br>
     <h1>
-        欢迎：<img th:if="${session.loginUser != null}" th:src="${session.loginUser.profileImageUrl}"/>[[${session.loginUser.nickname}]]<a style="color: red" href="http://auth.ylogin.com/logOut?redirectURL=http://ylogin.client1.com">退出</a>
+        <h1 style="color: blue">公共资源</h1>
     </h1>
 </div>
 </body>
