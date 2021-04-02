@@ -7,7 +7,7 @@
 5. nginx反向代理
 6. gateway网关
 6. redis
-7. MySQL-Plus
+7. MySQL
 8. HttpSession
 9. Cookie
 ## 2. 部署流程
